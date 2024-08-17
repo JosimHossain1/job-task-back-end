@@ -21,7 +21,21 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-   
+    app.get("/producst", (req, res)=>{
+      const {page=1, limit=10, search="", category, sortBy, priceRange } = req.query;
+
+      const filter = {};
+
+      if(search) filter.name = {$regex: search, $options : 'i'};
+      if(category) filter.category = category;
+      if(priceRange){
+        const [min, max] = priceRange.split('-').map(Number);
+        filter.price = {$gte:min, $lte : max};
+      }
+
+    })
+
+    
     app.listen(port, (req, res) => {
       console.log('Listening port on', port);
     });
