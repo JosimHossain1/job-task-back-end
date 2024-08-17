@@ -24,6 +24,7 @@ async function run() {
     app.get("/producst", (req, res)=>{
       const {page=1, limit=10, search="", category, sortBy, priceRange } = req.query;
 
+      // Filter
       const filter = {};
 
       if(search) filter.name = {$regex: search, $options : 'i'};
@@ -33,9 +34,19 @@ async function run() {
         filter.price = {$gte:min, $lte : max};
       }
 
+      // Sort
+
+      const sortOption = {};
+
+      if(sortBy){
+        if(sortBy==='priceLowToHigh') sortOption.price = 1;
+        else if(sortBy==='priceHighToLow') sortOption.price = -1;
+        else if(sortBy==="newestFirst") sortOption.createdAt = -1
+      }
+
     })
 
-    
+
     app.listen(port, (req, res) => {
       console.log('Listening port on', port);
     });
